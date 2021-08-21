@@ -1,8 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
+import Avatar from '@material-ui/core/Avatar';
+import Carousel from 'react-elastic-carousel';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import { CardHeader } from '@material-ui/core';
 const useStyles = makeStyles({
     root: {
       flexDirection: "column",
@@ -12,27 +19,105 @@ const useStyles = makeStyles({
     grid1: {
        maxWidth: '100%',
        height: 600,
-       backgroundColor: 'green'
+       backgroundImage: 'url(/b2.jpg)',
+       backgroundPosition: 'center',
+       alignItems: 'center',
+       justifyContent: 'center',
+       flexDirection: 'column'
     },
     grid2: {
         maxWidth: '100%',
         height: 340,
-        backgroundColor: 'blue'
-    }
+        backgroundColor: 'blue',
+        justifyContent: 'center',
+        backgroundImage: 'url(/1.jpg)',
+        backgroundPosition: 'cover',
+        backgroundRepeat: 'no-repeat'
+    },
+    avatar: {
+      marginRight: 50,
+      width: '300px',
+      height: '300px',
+      
+        },
+        div: {
+          marginTop: 15,
+          width: '157px',
+          height: '40px',
+          backgroundColor: 'grey',
+          marginRight: 50
+        },
+        card: {
+          width: '200px',
+          height: '250px',
+          borderRadius: '25px',
+          justifyContent: 'center',
+          backgroundColor: 'grey'
+          
+        },
+        ca: {
+          paddingTop: 40,
+          paddingRight: 45,
+          
+        },
+        media: {
+          height: '165px',
+          width: '100%',
+        },
+        content: {
+          backgroundImage: 'url('
+        },
+        div2: {
+         display: 'flex',
+          display: 'block'
+        },
+        image: {
+          backgroundColor: 'black'
+        }
   });
+
 
 
 function User() {
     const classes = useStyles();
 
+    const items = [
+      {id: 1, title: 'Jim',  ataquefisico: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png", df: 3, dm: 3},
+      {id: 2, title: 'Blob', ataqueMagico: 30, defesa: 41, img: "Slime.jpg", img2: "/Blob.png", df: 10, dm:2},
+      {id: 3, title: 'Avin', ataquefisico: 35, defesa: 30, img: "aguia.png", img2: "Avin.png", df: 8, dm: 5}
+    ]
     return(
         <div className={classes.root}>
-          
+            
            <Grid container className={classes.grid1}>
-
+            <Avatar className={classes.avatar}></Avatar>
+            <div className={classes.div}>
+            <Typography variant="h4">Luxbolado</Typography>
+            </div>
+            
            </Grid>
            <Grid container className={classes.grid2}>
-
+           <Carousel className={classes.ca}>
+             {items.map(item=><Card className={classes.card} >
+               <CardMedia
+               image = {item.img}
+               title = {item.description}
+               className={classes.media}
+               
+               >
+               </CardMedia>
+              <div>.</div>
+               
+              <CardActions className={classes.image}>
+                
+              <Avatar className={classes.image}>{item.df}</Avatar>
+              <img src={item.img2}></img>
+               <Avatar className={classes.image}>{item.dm}</Avatar>
+               
+               
+              </CardActions>
+             </Card>)}
+           </Carousel>
            </Grid>
         </div>
         

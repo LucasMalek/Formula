@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
     dist: {
         marginLeft: 275,
-        width: '400px',
+        width: '200px',
         height: '200px',
         
     },
@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     img: {
         width: '600px',
         height: '700px',
+        
         
     },
     img2: {
@@ -113,7 +114,7 @@ function Midle() {
         <Typography variant="h6" className={classes.ze}>Zé</Typography>
         <Typography variant="h6" className={classes.text}>Blob</Typography>
         <Typography variant="h6" className={classes.sem}>Sem nome</Typography>
-        <Typography variant="h6" className={classes.text}>K.E.O</Typography>
+        
         
          </div>
         </Grid>
