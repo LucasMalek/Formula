@@ -7,9 +7,9 @@ import Carousel from 'react-elastic-carousel';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import { CardHeader } from '@material-ui/core';
+import Buttonn from '../../Utils/Buttonn';
+import Button from '@material-ui/core/Button';
+import GroupIcon from '@material-ui/icons/Group';
 const useStyles = makeStyles({
     root: {
       flexDirection: "column",
@@ -42,10 +42,12 @@ const useStyles = makeStyles({
         },
         div: {
           marginTop: 15,
-          width: '157px',
+          width: '170px',
           height: '40px',
           backgroundColor: 'grey',
-          marginRight: 50
+          marginRight: 50,
+          alignItems: 'center',
+          justifyContent: 'center'
         },
         card: {
           width: '200px',
@@ -73,7 +75,10 @@ const useStyles = makeStyles({
         },
         image: {
           backgroundColor: 'black'
-        }
+        },
+       but: {
+        backgroundImage: 'cover'
+       }
   });
 
 
@@ -90,13 +95,20 @@ function User() {
         <div className={classes.root}>
             
            <Grid container className={classes.grid1}>
-            <Avatar className={classes.avatar}></Avatar>
+          
+            <Avatar className={classes.avatar}><img src="fizz.jpg"></img></Avatar>
+            
             <div className={classes.div}>
             <Typography variant="h4">Luxbolado</Typography>
+            <div className={classes.but}></div>
+            <Button variant="contained" color="secondary" className={classes.but} endIcon={<GroupIcon/>}>
+        Troque  Cartas
+      </Button>
             </div>
-            
+           
            </Grid>
            <Grid container className={classes.grid2}>
+             
            <Carousel className={classes.ca}>
              {items.map(item=><Card className={classes.card} >
                <CardMedia

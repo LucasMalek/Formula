@@ -85,6 +85,12 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: 30,
         width: '900px',
         
+    },
+    h: {
+        width: '500px',
+        height: '680px',
+        paddingLeft: 450,
+    
     }
   }));
 
@@ -96,7 +102,7 @@ function Midle() {
         <div className= {classes.root}>
         <Container className = {classes.C1}>
        <img src="fada.png" className={classes.bu}></img>
-        
+       
        </Container>
        
         <Grid container className= {classes.C2}>
@@ -113,6 +119,7 @@ function Midle() {
         <Typography variant="h6" className={classes.U}>U</Typography>
         <Typography variant="h6" className={classes.ze}>Zé</Typography>
         <Typography variant="h6" className={classes.text}>Blob</Typography>
+      
         <Typography variant="h6" className={classes.sem}>Sem nome</Typography>
         
         

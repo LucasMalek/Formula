@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
       title: 'Troque cartas agora!',
       width: '100%',
     },
-   
+    
     
   ];
 
