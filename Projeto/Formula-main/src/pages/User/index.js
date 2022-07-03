@@ -7,7 +7,6 @@ import Carousel from 'react-elastic-carousel';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
-import Buttonn from '../../Utils/Buttonn';
 import Button from '@material-ui/core/Button';
 import GroupIcon from '@material-ui/icons/Group';
 const useStyles = makeStyles({
@@ -79,62 +78,58 @@ const useStyles = makeStyles({
        but: {
         backgroundImage: 'cover'
        }
-  });
-
+  })
 
 
 function User() {
     const classes = useStyles();
-
     const items = [
       {id: 1, title: 'Jim',  ataquefisico: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png", df: 3, dm: 3},
       {id: 2, title: 'Blob', ataqueMagico: 30, defesa: 41, img: "Slime.jpg", img2: "/Blob.png", df: 10, dm:2},
       {id: 3, title: 'Avin', ataquefisico: 35, defesa: 30, img: "aguia.png", img2: "Avin.png", df: 8, dm: 5}
     ]
-    return(
-        <div className={classes.root}>
-            
-           <Grid container className={classes.grid1}>
-          
-            <Avatar className={classes.avatar}><img src="fizz.jpg"></img></Avatar>
-            
-            <div className={classes.div}>
+    return (
+      <div className={classes.root}>
+        <Grid container className={classes.grid1}>
+          <Avatar className={classes.avatar}>
+            <img src="fizz.jpg"></img>
+          </Avatar>
+
+          <div className={classes.div}>
             <Typography variant="h4">Luxbolado</Typography>
             <div className={classes.but}></div>
-            <Button variant="contained" color="secondary" className={classes.but} endIcon={<GroupIcon/>}>
-        Troque  Cartas
-      </Button>
-            </div>
-           
-           </Grid>
-           <Grid container className={classes.grid2}>
-             
-           <Carousel className={classes.ca}>
-             {items.map(item=><Card className={classes.card} >
-               <CardMedia
-               image = {item.img}
-               title = {item.description}
-               className={classes.media}
-               
-               >
-               </CardMedia>
-              <div>.</div>
-               
-              <CardActions className={classes.image}>
-                
-              <Avatar className={classes.image}>{item.df}</Avatar>
-              <img src={item.img2}></img>
-               <Avatar className={classes.image}>{item.dm}</Avatar>
-               
-               
-              </CardActions>
-             </Card>)}
-           </Carousel>
-           </Grid>
-        </div>
-        
-    )
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.but}
+              endIcon={<GroupIcon />}
+            >
+              Troque Cartas
+            </Button>
+          </div>
+        </Grid>
+        <Grid container className={classes.grid2}>
+          <Carousel className={classes.ca}>
+            {items.map((item) => (
+              <Card className={classes.card}>
+                <CardMedia
+                  image={item.img}
+                  title={item.description}
+                  className={classes.media}
+                ></CardMedia>
+                <div>.</div>
+
+                <CardActions className={classes.image}>
+                  <Avatar className={classes.image}>{item.df}</Avatar>
+                  <img src={item.img2}></img>
+                  <Avatar className={classes.image}>{item.dm}</Avatar>
+                </CardActions>
+              </Card>
+            ))}
+          </Carousel>
+        </Grid>
+      </div>
+    );
 }
 
-export default User;
-
+export default User

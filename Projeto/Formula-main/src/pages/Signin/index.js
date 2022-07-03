@@ -1,10 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
-import Buttonn from '../../Utils/Buttonn';
-import { Button } from '@material-ui/core';
+import './button.css'
 const useStyles = makeStyles({
     root: {
       width: '100%',
@@ -23,17 +21,18 @@ const useStyles = makeStyles({
       marginTop: 150,
       marginLeft:750,
       height: '40%',
-
+      alignItems: 'center'
     },
     img: {
      marginLeft: 80,
      paddingBottom: 30
     },
-    bu: {
-        width: '90px',
-        height: '50px',
-        paddingLeft: 140
+    bu1: {
+        marginRight: 100
     },
+    bu2: {
+        marginRight: 20
+    }, 
     dragon: {
       marginTop: 450,
       marginLeft:1065,
@@ -44,34 +43,41 @@ const useStyles = makeStyles({
     },
     back: {
       position: 'relative'
-    }
+    },
+    conatinerbutton: {
+          display: 'flex',
+          
+    },
+
   });
+
 
 function Signin(){
     const classes = useStyles();
-
+    <link href="./button.css"></link>
     return (
         <div className={classes.root}>
           
           <Box  display= 'flex' flexDirection='column' m={5}  className={classes.div}>
-            
+            <div>
             <img src="formula.png" ></img>
+            </div>
+            
          <form >
            
          <TextField id="outlined-basic" label="Login" variant="outlined" className={classes.img}/>
          <TextField id="outlined-basic" label="Senha" variant="outlined" className={classes.img}/>
          </form>
           
-          
-         
-         <div className={classes.bu}> 
-         <Button variant="contained" color="primary" fullWidth>
-          Entrar
-         </Button>
+         <div className={classes.conatinerbutton}>
+         <div className={classes.bu1}>
+         <button class="hover-underline-animation" >Entrar</button>
+         </div>
+         <div className={classes.bu2}>
+         <button class="hover-underline-animation" >Registrar</button>
+         </div>
          </div>
          </Box>
-         
-          
         </div>
     )
 }
