@@ -81,7 +81,7 @@ const useStyles = makeStyles({
   })
 
 
-function User() {
+function User({props}) {
     const classes = useStyles();
     const items = [
       {id: 1, title: 'Jim',  ataquefisico: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png", df: 3, dm: 3},

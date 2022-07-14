@@ -11,12 +11,8 @@ function registrarusuario(usuario) {
 
 }
 
-function getusuario(id) {
-    if(usuarios[id]) {
-        return usuarios[id]
-    }else {
-        return {}
-    }
+function getusuarios() {
+   return usuarios
 }
 
-module.exports = {registrarusuario, getusuario}
+module.exports = {registrarusuario, getusuarios}
