@@ -8,12 +8,23 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { default: mongoose } = require('mongoose');
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 //Basic configs
-app.use(cors())
+const corsOptions = {
+  origin: true, //included origin as true
+  credentials: true, //included credentials as true
+};
+app.use(cors(corsOptions))
 app.use(bodyParser.urlencoded({extended : true}))
 app.use(express.json())
-
+app.use(cookieParser())
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 //Credentials
 const dbUser = process.env.DB_USER
 const dbPassword = process.env.DB_PASS
@@ -84,10 +95,11 @@ app.post('/signin', async(req, res) => {
               }
         }
         try{
-          const token = jwt.sign({
+          const responsetoken = jwt.sign({
               id: userexists._id
           }, secret)
-          return res.json({user: userexists, token: token})
+           res.cookie("token", responsetoken, { maxAge: 30000})
+           res.json({user: userexists})  
         }catch(erro){
               return res.status(500).json({msg: erro})
         }

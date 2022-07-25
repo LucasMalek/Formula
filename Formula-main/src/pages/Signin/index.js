@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios'
 import {Navigate} from 'react-router-dom'
 
+axios.defaults.withCredentials = true
+
 const useStyles = makeStyles({
     root: {
       width: '100%',
@@ -66,12 +68,15 @@ function Signin(){
       try{
          axios.post('http://localhost:5000/signin', data).then(
           response => {
-              const {user, token} = response.data
-              console.log(token)
-              {token === undefined ?(
+               var cookies = document.cookie.split(';')
+              .map(cookie => cookie.split('='))
+              .reduce((acumulator, [key, value]) => ({...acumulator, [key.trim()]: decodeURIComponent(value)}), {})
+              const {user} = response.data
+              
+              {user === undefined ?(
                 alert(response.data)
               ): (
-                 axios.post('http://localhost:5000/validate', token).then(
+                 axios.post('http://localhost:5000/validate', cookies.token).then(
                  response => {
                   {typeof(response.data) != 'boolean' ? alert(response.data) : setStatesignin(response.data)}
                  }
