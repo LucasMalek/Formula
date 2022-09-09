@@ -1,0 +1,135 @@
+/* Imports */
+require('dotenv').config();
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { default: mongoose } = require('mongoose');
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
+const database = require('./database/database.js');
+const { response } = require('express');
+
+//Basic configs
+const corsOptions = {
+  origin: true, //included origin as true
+  credentials: true, //included credentials as true
+};
+
+app.use(cors(corsOptions))
+app.use(bodyParser.urlencoded({extended : true}))
+app.use(express.json())
+app.use(cookieParser())
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
+//Credentials
+const secret = process.env.SECRET
+
+function Cartasiniciais(a, b, array) {
+  if(array.length != 3) {
+    let card_id = Math.floor(Math.random() * (b - a + 1)) + a
+    {array.includes(card_id) ? (
+      Cartasiniciais(a,b, array)
+    ): (
+      array.push(card_id),
+      Cartasiniciais(a,b, array)
+      )
+  }}
+  return array
+}
+
+//Register
+app.post('/register', async (req, res) => {
+
+       const availableCards = {
+        0: {id: 1, title: 'Jim',  ataque: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png", df: 3, dm: 3},
+        1: {id: 2, title: 'Blob', ataque: 30, defesa: 41, img: "/Slime.jpg", img2: "/Blob.png", df: 10, dm:2},
+        2: {id: 3, title: 'Avin', ataque: 35, defesa: 30, img: "/aguia.png", img2: "/Avin.png", df: 8, dm: 5}
+       }
+      
+      const {email, senha, nome, cidade, descricao} = req.body
+      if(!email || !senha || !nome || !cidade || !descricao){
+       return res.send("É necessário preencher todos os campos!")
+      }else {
+         //Check if user already exists
+         let query = 'select * from formula.user where email = ' + `'${email}'`
+         let [userexists] = await database.query(query)
+         if (userexists){
+              return res.send("Email ja cadastrado!")
+         }
+         //Create Password
+         const salt = await bcrypt.genSalt(12)
+         const passwordHash = await bcrypt.hash(senha, salt)
+          
+         //Create User
+         try{
+           const arrayinicial = []
+           let cartasiniciais = Cartasiniciais(0, 2, arrayinicial)
+           console.log(cartasiniciais)
+           query = 'select * from formula.user where email = ' + `'${email}'`
+           userexists = await database.query(query)
+           await database.query('INSERT into formula.user (email, senha, nome, cidade, descricao) values($1, $2, $3, $4, $5)', [email, passwordHash, nome, cidade, descricao])
+           .then(async () => {
+               for(i in cartasiniciais){
+                await database.query('INSERT into formula.card (id_user, Nome, Ataque, Defesa, Descricao) values($1, $2, $3, $4, $5)', [query.id, availableCards[i].title, availableCards[i].ataque, availableCards[i].defesa, "blabla"])
+               }
+           })
+           .then(() => {return res.send(true)})
+         }catch(erro){
+             return  res.send(`${erro}`)
+         }
+      }
+})
+
+
+function validateToken(req, res, next) {
+  const token = Object.entries(req.body)
+  jwt.verify(token[0][0], secret, (err) => {
+          if(err) return res.send(`${err}`)
+          next()
+  })
+}
+
+app.post('/validate', validateToken, (req, res) => {
+        return res.send(true)     
+})
+
+//Signin
+app.post('/signin', async(req, res) => {
+  const{email, senha} = req.body
+  //Validations
+  if(!email || !senha){
+       return res.send("É necessários preencher todos os campos!")
+  }else{
+        //Check if user already exists
+         const query = 'select * from formula.user where email = ' + `'${email}'`
+         const [userexists] = await database.query(query)
+        if (!userexists){
+             return res.send('Usuário não encontrado')
+        }else{
+              const checkpassword = await bcrypt.compare(senha, userexists.senha)
+              if(!checkpassword){
+                     return res.send("Senha incorreta!")
+              }
+        }
+        try{
+          const responsetoken = jwt.sign({
+              id: userexists._id
+          }, secret)
+           res.cookie("token", responsetoken, { maxAge: 30000})
+           res.send({user: userexists})  
+        }catch(erro){
+              return res.status(500).json({msg: erro})
+        }
+  }
+}
+)
+
+database.connect().then(app.listen(5000, () => {console.log("Servidor ligado! Escutando na porta 5000")}))
+
