@@ -6,6 +6,7 @@ import Carousel from 'react-elastic-carousel';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
+import { red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles({
     grid2: {
@@ -21,8 +22,9 @@ const useStyles = makeStyles({
           height: '250px',
           borderRadius: '25px',
           justifyContent: 'center',
-          backgroundColor: 'grey'
-          
+          backgroundColor: 'grey',
+          background: 'linear-gradient(to right, white, grey)',
+          marginTop: 3
         },
         media: {
           height: '165px',
@@ -33,22 +35,21 @@ const useStyles = makeStyles({
 
 function CardDisplay(props) {
            const classes = useStyles();
-           console.log(props.itens)
+
            return(
             <Grid container className={classes.grid2}>
             <Carousel className={classes.ca}>
             {props.itens.map((item) => (
               <Card className={classes.card}>
                 <CardMedia
-                  image={item.img}
-                  title={item.description}
+                  image={item.character_img}
                   className={classes.media}
                 ></CardMedia>
                 <div>.</div>
                 <CardActions>
-                  <Avatar>{item.df}</Avatar>
-                  <img src={item.img2}></img>
-                  <Avatar>{item.dm}</Avatar>
+                  <Avatar >{item.ataque}</Avatar>
+                  <img src={item.name_img}></img>
+                  <Avatar className={classes.ad_color}>{item.defesa}</Avatar>
                 </CardActions>
               </Card>
             ))}

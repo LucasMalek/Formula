@@ -5,8 +5,11 @@ import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import { useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import { red } from '@material-ui/core/colors';
 import CardDisplay from '../../Utils/CardDisplay';
+import { useEffect } from 'react';
+import axios from 'axios'
+import Tradedisplay from '../Components/tradedisplay';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles({
     gridroot: {
@@ -16,7 +19,8 @@ const useStyles = makeStyles({
        alignItems: 'center',
        justifyContent: 'center',
        backgroundImage: 'url(/b2.jpg)',
-       backgroundPosition: 'center'
+       backgroundPosition: 'center',
+       position: 'absolute'
     },
     avatar: {
       width: '300px',
@@ -51,34 +55,44 @@ const useStyles = makeStyles({
           display: 'flex',
           justifyContent: 'space-between',
           width: '100vw',
-          backgroundColor: 'red',
           height: '100%'
-        },
+        }
+       
   })
     function User() {
-    let {info} = useParams();
-    info = info.replace('%7B', '{');
-    info = info.replace('%7D', '}');
-    info = info.replace(':', '');
-    info = JSON.parse(info);
+      let {info} = useParams();
+      info = info.replace('%7B', '{');
+      info = info.replace('%7D', '}');
+      info = info.replace(':', '');
+      info = JSON.parse(info);
+     
+      let user_cards
+      let all_cards
+
+    useEffect(async() => {
+      try {
+           await axios.post("http://localhost:5000/getusercards", info)
+           .then(response => user_cards = response.data)
+           await axios.post("http://localhost:5000/getallcards", info)
+           .then(response => all_cards = response.data)
+      }catch(e) {
+          alert(e)
+      }
+    }, [])
+
     const classes = useStyles();
-    const [displayoption, setDisplayoption] = useState({minhascartas: false, trocarcartas: false})
-    const alternarEstados = (element) => {
+    const [displayoption, setDisplayoption] = useState({minhascartas: false, trocarcartas: false, user_cards: null, all_cards: null})
+    const alternarEstados = async(element) => {
               document.querySelectorAll('.boxbutton').forEach(b => {
                 b.style.display = "none"
               })
               {element.currentTarget.id == 'cartas' ?(
-                  setDisplayoption({minhascartas: true})
+                  setDisplayoption({minhascartas: true, user_cards: user_cards})
               ): (
-                setDisplayoption({trocarcartas: true})
+                setDisplayoption({trocarcartas: true, all_cards: all_cards, user_cards: user_cards})
               )}
               
     }
-    const items = [
-      {id: 1, title: 'Jim',  ataquefisico: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png", df: 3, dm: 3},
-      {id: 2, title: 'Blob', ataqueMagico: 30, defesa: 41, img: "/Slime.jpg", img2: "/Blob.png", df: 10, dm:2},
-      {id: 3, title: 'Avin', ataquefisico: 35, defesa: 30, img: "/aguia.png", img2: "/Avin.png", df: 8, dm: 5}
-    ]
     return (
       <div>
         <Grid container spacing= {0} className={classes.gridroot}>
@@ -92,11 +106,12 @@ const useStyles = makeStyles({
           </div>
           <Grid item className={classes.griditem2}>
             <div className={classes.divbutton}>
-            {displayoption.minhascartas && <CardDisplay itens = {items} />}
+            {displayoption.minhascartas && <CardDisplay itens = {displayoption.user_cards} />}
             <Button id = 'cartas' className='boxbutton' onClick={alternarEstados}>Minhas Cartas</Button>
-            <Button id = 'troca' className='boxbutton'>CONFIGURACAO</Button>
+            <Button id = 'troca'  className='boxbutton' onClick={alternarEstados}>CONFIGURACAO</Button>
             </div>
           </Grid>
+          {displayoption.trocarcartas && <Tradedisplay users={[displayoption.all_cards, displayoption.user_cards, info]}/>}
         </Grid>
       </div>
     );

@@ -42,7 +42,6 @@ const useStyles = makeStyles({
     justifyContent: "center",
     width: "80%",
     marginTop: "20%",
-    boxShadow: "0 0 3rem"
   },
   idformulario: {
     display: "flex",

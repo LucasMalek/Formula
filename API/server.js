@@ -5,7 +5,6 @@ const app = express()
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { default: mongoose } = require('mongoose');
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const database = require('./database/database.js');
@@ -43,14 +42,13 @@ function Cartasiniciais(a, b, array) {
   }}
   return array
 }
-
 //Register
 app.post('/register', async (req, res) => {
 
        const availableCards = {
-        0: {id: 1, title: 'Jim',  ataque: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png", df: 3, dm: 3},
-        1: {id: 2, title: 'Blob', ataque: 30, defesa: 41, img: "/Slime.jpg", img2: "/Blob.png", df: 10, dm:2},
-        2: {id: 3, title: 'Avin', ataque: 35, defesa: 30, img: "/aguia.png", img2: "/Avin.png", df: 8, dm: 5}
+        0: {id: 1, title: 'Jim',  ataque: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png"},
+        1: {id: 2, title: 'Blob', ataque: 30, defesa: 41, img: "/Slime.jpg", img2: "/Blob.png"},
+        2: {id: 3, title: 'Avin', ataque: 35, defesa: 30, img: "/aguia.png", img2: "/Avin.png"}
        }
       
       const {email, senha, nome, cidade, descricao} = req.body
@@ -71,16 +69,17 @@ app.post('/register', async (req, res) => {
          try{
            const arrayinicial = []
            let cartasiniciais = Cartasiniciais(0, 2, arrayinicial)
-           console.log(cartasiniciais)
            query = 'select * from formula.user where email = ' + `'${email}'`
-           userexists = await database.query(query)
            await database.query('INSERT into formula.user (email, senha, nome, cidade, descricao) values($1, $2, $3, $4, $5)', [email, passwordHash, nome, cidade, descricao])
+           .then(async () => {[userexists] = await database.query(query)
+                            delete userexists.senha
+           })
            .then(async () => {
                for(i in cartasiniciais){
-                await database.query('INSERT into formula.card (id_user, Nome, Ataque, Defesa, Descricao) values($1, $2, $3, $4, $5)', [query.id, availableCards[i].title, availableCards[i].ataque, availableCards[i].defesa, "blabla"])
+                await database.query('INSERT into formula.card (id_user, nome, descricao, character_img, name_img, ataque, defesa, name_user) values($1, $2, $3, $4, $5, $6, $7, $8)', [userexists.id, availableCards[i].title, "blabla", availableCards[i].img, availableCards[i].img2, availableCards[i].ataque, availableCards[i].defesa, userexists.nome])
                }
            })
-           .then(() => {return res.send(true)})
+           .then(() => {return res.send(userexists)})
          }catch(erro){
              return  res.send(`${erro}`)
          }
@@ -120,9 +119,9 @@ app.post('/signin', async(req, res) => {
         }
         try{
           const responsetoken = jwt.sign({
-              id: userexists._id
+              id: userexists.id
           }, secret)
-           res.cookie("token", responsetoken, { maxAge: 30000})
+           res.cookie("token", responsetoken, { maxAge: 3000})
            res.send({user: userexists})  
         }catch(erro){
               return res.status(500).json({msg: erro})
@@ -130,6 +129,36 @@ app.post('/signin', async(req, res) => {
   }
 }
 )
+
+app.post('/getusercards', async(req, res)=> {
+    const query = 'select * from formula.card where id_user = ' + `'${req.body.id}'`
+    res.send(await database.query(query))
+})
+
+app.post('/getallcards', async(req, res)=> {
+  const query = 'select u.nome as nomeuser, c.nome as nomecarta, c.id_user, c.id, c.character_img, c.name_img from formula.user u, formula.card c  where u.id = c.id_user and id_user <> ' + `'${req.body.id}'`
+  res.send(await database.query(query))
+})
+
+app.post('/getusers', async(req, res) => {
+      const query = 'select nome from formula.user where id <>' + `${req.body.id}`
+      res.send(await database.query(query))
+})
+
+
+app.post('/tradecards', async(req, res) => {
+  
+  const query1 = 'UPDATE formula.card SET id_user =' + `'${req.body.card2.id_user}'`+ ',' +'name_user ='+ `'${req.body.card2.name_user}'` +'WHERE id =' +`'${req.body.card1.id}'`
+  const query2 = 'UPDATE formula.card SET id_user =' + `'${req.body.card1.id_user}'`+ ',' + 'name_user ='+ `'${req.body.card1.nomeuser}'` + 'WHERE id =' + `'${req.body.card2.id}'`
+  try {
+    await database.query(query1).then(await database.query(query2)).then(res.send('Sucesso!'))
+  }
+  catch(erro) {
+     res.send(erro)
+  }
+ 
+})
+
 
 database.connect().then(app.listen(5000, () => {console.log("Servidor ligado! Escutando na porta 5000")}))
 
