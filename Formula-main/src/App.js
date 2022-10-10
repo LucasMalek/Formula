@@ -1,11 +1,10 @@
 import Home from './pages/index'
 import React from 'react';
-import ReactDOM from 'react-dom';
+
 import Signin from './pages/Signin';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import User from './pages/User';
 import Register from './pages/Signin/Register';
-
 function App() {
   
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -8,6 +8,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Avatar from '@material-ui/core/Avatar';
 import Buttonn from '../../Utils/Buttonn';
+import {Navigate} from 'react-router-dom';
 const useStyles = makeStyles({
     toolbar: {
       backgroundColor: '#ad2d2d',
@@ -33,7 +34,7 @@ const useStyles = makeStyles({
 
 function Header() {
     const classes = useStyles();
-
+    const [state, setState] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -43,7 +44,8 @@ function Header() {
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorEl(null)
+    setState(true)
   }
 
   const options = [
@@ -52,9 +54,9 @@ function Header() {
 
     return(
      <AppBar className = {classes.toolbar}>
+      
          <Toolbar>
-         
-         <img src="formula.png" className={classes.for}></img>
+         <img src="/formula.png" className={classes.for}></img>
           <div className={classes.div}></div>
          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
          <IconButton
@@ -79,8 +81,9 @@ function Header() {
           },
         }}
       >
+        {state && <Navigate to={'/Signin'}/>}
         {options.map((option) => (
-          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+          <MenuItem  key={option} selected={option === 'Pyxis'} onClick={handleClose}>
             {option}
           </MenuItem>
         ))}
@@ -88,6 +91,7 @@ function Header() {
           </IconButton>
          </Toolbar>
      </AppBar>
+     
     );
 }
 

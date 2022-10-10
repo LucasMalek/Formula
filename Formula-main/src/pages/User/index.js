@@ -10,7 +10,9 @@ import { useEffect } from 'react';
 import axios from 'axios'
 import Tradedisplay from '../Components/tradedisplay';
 import IconButton from '@material-ui/core/IconButton';
-
+import ViewCarouselIcon from '@material-ui/icons/ViewCarousel';
+import StorefrontIcon from '@material-ui/icons/Storefront';
+import AddCardIcon from '@material-ui/icons/Add';
 const useStyles = makeStyles({
     gridroot: {
       display: 'flex',
@@ -53,10 +55,18 @@ const useStyles = makeStyles({
         },
         divbutton: {
           display: 'flex',
-          justifyContent: 'space-between',
           width: '100vw',
-          height: '100%'
-        }
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          
+        },
+        typograph: {
+          background: 'linear-gradient(to bottom, grey, white)',
+          marginTop: 15,
+          boxShadow: '0px 0px 5px ',
+          fontWeight: '300'
+        },
        
   })
     function User() {
@@ -65,7 +75,7 @@ const useStyles = makeStyles({
       info = info.replace('%7D', '}');
       info = info.replace(':', '');
       info = JSON.parse(info);
-     
+      info.profile_img = `/${info.profile_img}`
       let user_cards
       let all_cards
 
@@ -79,6 +89,10 @@ const useStyles = makeStyles({
           alert(e)
       }
     }, [])
+
+    const geracartas = async() => {
+      await axios.post("http://localhost:5000/gerarnovascartas", info).then(response=> alert(response.msg))
+    }
 
     const classes = useStyles();
     const [displayoption, setDisplayoption] = useState({minhascartas: false, trocarcartas: false, user_cards: null, all_cards: null})
@@ -98,17 +112,23 @@ const useStyles = makeStyles({
         <Grid container spacing= {0} className={classes.gridroot}>
           <div>
           <Grid item className={classes.griditem1}>
-          <Avatar className={classes.avatar}>
-            <img src="/fizz.jpg"></img>
+          <Avatar className={classes.avatar} src={info.profile_img} >
           </Avatar>
-            <Typography variant="h4">{info.nome}</Typography>
+            <Typography variant="h5" className={classes.typograph}>{info.nome}</Typography>
           </Grid>
           </div>
           <Grid item className={classes.griditem2}>
             <div className={classes.divbutton}>
             {displayoption.minhascartas && <CardDisplay itens = {displayoption.user_cards} />}
-            <Button id = 'cartas' className='boxbutton' onClick={alternarEstados}>Minhas Cartas</Button>
-            <Button id = 'troca'  className='boxbutton' onClick={alternarEstados}>CONFIGURACAO</Button>
+            <IconButton id = 'cartas' className='boxbutton' style = {{borderRadius: '50px', backgroundColor: 'red', marginRight:200, boxShadow: '0px 0px 15px'}} onClick={alternarEstados}>
+            <ViewCarouselIcon fontSize="large"/>
+            </IconButton>
+            <IconButton className='boxbutton' style = {{borderRadius: '50px', backgroundColor: 'yellow', boxShadow: '0px 0px 15px'}} onClick={geracartas}>
+            <AddCardIcon fontSize="large"/>
+            </IconButton>
+            <IconButton id = 'troca'  className='boxbutton' style = {{borderRadius: '50px', backgroundColor: 'green', marginLeft: 200, boxShadow: '0px 0px 15px'}} onClick={alternarEstados} >
+            <StorefrontIcon fontSize="large"/>
+            </IconButton>
             </div>
           </Grid>
           {displayoption.trocarcartas && <Tradedisplay users={[displayoption.all_cards, displayoption.user_cards, info]}/>}

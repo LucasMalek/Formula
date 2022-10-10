@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import './button.css'
 import { useForm } from 'react-hook-form';
 import axios from 'axios'
-import {Navigate} from 'react-router-dom'
+import {Navigate} from 'react-router-dom';
 const useStyles = makeStyles({
     root: {
       width: '100%',
@@ -48,8 +48,10 @@ function Register(){
     const [state, setState] = useState([false, null]);
 
     const postregister = async (data) => {
+
         try{
             const response = await axios.post('http://localhost:5000/register', data)
+            
             {(typeof(response.data) === "string") ?(
               alert(response.data)
             ): (

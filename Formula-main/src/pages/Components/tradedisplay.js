@@ -5,6 +5,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/MenuList'
 import Menuitem from '@material-ui/core/MenuItem'
+import Header from "./Header";
+import Button from '@material-ui/core/Button';
 const useStyles = makeStyles({
        selectroot: {
         display: "flex",
@@ -35,11 +37,14 @@ const useStyles = makeStyles({
        divroot: {
         display: 'flex',
         alignItems: "center",
-        height: '80%',
-        width: '80%',
-        
+        background: 'linear-gradient(to bottom, #2e0000,#54007f)',
+        height: '100vh',
+        width: '100vw',
         position: "absolute",
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundImage: 'url(/1070861.jpg)',
+       
+        backgroundSize: 'cover',
        },
        teste: {
         display: "flex",
@@ -58,7 +63,15 @@ const useStyles = makeStyles({
     position: 'absolute'
        },
        buttonsubmit: {
-        
+        height: '80px',
+        width: '80px',
+        borderRadius: '50%',
+        backgroundColor: 'red',
+        position: 'absolute',
+        "&:hover": {
+            backgroundColor: 'green',
+            boxShadow: '0px 0px 25px'
+        }
        }
   })
 
@@ -75,6 +88,7 @@ function Tradedisplay(props) {
     }
     return (
         <div className={classes.divroot}>
+        <Header></Header>
         <Menu className={classes.selectroot}>
         {props.users[0].map(element1=> {
             return (
@@ -104,7 +118,7 @@ function Tradedisplay(props) {
             )
         })}
        </Menu>
-       <button className={classes.buttonsubmit}  onClick={selectcardtrade}>APERTAAAAAAAA</button>
+       <Button variant="contained" onClick={selectcardtrade} className={classes.buttonsubmit}>TROCAR</Button>
         </div>
     )   
 }

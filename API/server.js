@@ -42,14 +42,28 @@ function Cartasiniciais(a, b, array) {
   }}
   return array
 }
+const availableCards = {
+  0: {id: 1, title: 'Jim',  ataque: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png"},
+  1: {id: 2, title: 'Blob', ataque: 30, defesa: 41, img: "/Slime.jpg", img2: "/Blob.png"},
+  2: {id: 3, title: 'Avin', ataque: 35, defesa: 30, img: "/aguia.png", img2: "/Avin.png"},
+  3: {id: 4, title: 'Cattiger', ataque: 40, defesa: 25, img: "/cattiger.jpg", img2: "/jim.png"},
+  4: {id: 5, title: 'Golem', ataque: 20, defesa: 50, img: "/golem.jpg", img2: "/Blob.png"},
+  5: {id: 6, title: 'Mantidae', ataque: 40, defesa: 25, img: "/mantidae.jpg", img2: "/Avin.png"},
+  6: {id: 7, title: 'Urus', ataque: 30, defesa: 15, img: "/urus.jpg", img2: "/Blob.png"}
+ }
+
+ const avaibleprofilePhotos = {
+  0: {name: "pororei.jpg"},
+  1: {name: "porotanch.jpg"},
+  2: {name: "poroyasuo.jpg"},
+  3: {name: "poroyi.jpg"},
+  4: {name: "fizz.jpg"},
+  5: {name: "poroashe.jpg"},
+  6: {name: "porodraven.jpg"}
+ }
 //Register
 app.post('/register', async (req, res) => {
 
-       const availableCards = {
-        0: {id: 1, title: 'Jim',  ataque: 30, defesa: 40, img: "/jack.jpg", img2: "/jim.png"},
-        1: {id: 2, title: 'Blob', ataque: 30, defesa: 41, img: "/Slime.jpg", img2: "/Blob.png"},
-        2: {id: 3, title: 'Avin', ataque: 35, defesa: 30, img: "/aguia.png", img2: "/Avin.png"}
-       }
       
       const {email, senha, nome, cidade, descricao} = req.body
       if(!email || !senha || !nome || !cidade || !descricao){
@@ -68,16 +82,16 @@ app.post('/register', async (req, res) => {
          //Create User
          try{
            const arrayinicial = []
-           let cartasiniciais = Cartasiniciais(0, 2, arrayinicial)
+           let cartasiniciais = Cartasiniciais(0, 6, arrayinicial)
            query = 'select * from formula.user where email = ' + `'${email}'`
-           await database.query('INSERT into formula.user (email, senha, nome, cidade, descricao) values($1, $2, $3, $4, $5)', [email, passwordHash, nome, cidade, descricao])
+           await database.query('INSERT into formula.user (email, senha, nome, cidade, descricao, profile_img) values($1, $2, $3, $4, $5, $6)', [email, passwordHash, nome, cidade, descricao, avaibleprofilePhotos[cartasiniciais[0]].name])
            .then(async () => {[userexists] = await database.query(query)
                             delete userexists.senha
            })
            .then(async () => {
-               for(i in cartasiniciais){
+              cartasiniciais.map(async (i) => {
                 await database.query('INSERT into formula.card (id_user, nome, descricao, character_img, name_img, ataque, defesa, name_user) values($1, $2, $3, $4, $5, $6, $7, $8)', [userexists.id, availableCards[i].title, "blabla", availableCards[i].img, availableCards[i].img2, availableCards[i].ataque, availableCards[i].defesa, userexists.nome])
-               }
+              });
            })
            .then(() => {return res.send(userexists)})
          }catch(erro){
@@ -159,6 +173,15 @@ app.post('/tradecards', async(req, res) => {
  
 })
 
+app.post('/gerarnovascartas', (req, res) => {
+           const arrayinicial = []
+           let cartasiniciais = Cartasiniciais(0, 6, arrayinicial)
+           cartasiniciais.map(async (i) => {
+            await database.query('INSERT into formula.card (id_user, nome, descricao, character_img, name_img, ataque, defesa, name_user) values($1, $2, $3, $4, $5, $6, $7, $8)', [req.body.id, availableCards[i].title, "blabla", availableCards[i].img, availableCards[i].img2, availableCards[i].ataque, availableCards[i].defesa, req.body.nome])
+          })
+          res.json({msg: 'Cartas geradas!'})
+
+})
 
 database.connect().then(app.listen(5000, () => {console.log("Servidor ligado! Escutando na porta 5000")}))
 
